@@ -36,7 +36,7 @@
 
     <servlet>
         <servlet-name>Signup</servlet-name>
-        <servlet-class>org.example.servlet.Signup</servlet-class>
+        <servlet-class>com.example.servlet.Signup</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Signup</servlet-name>
@@ -45,7 +45,7 @@
 
     <servlet>
         <servlet-name>Login</servlet-name>
-        <servlet-class>org.example.servlet.Login</servlet-class>
+        <servlet-class>com.example.servlet.Login</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
@@ -54,7 +54,7 @@
 
     <servlet>
         <servlet-name>Logout</servlet-name>
-        <servlet-class>org.example.servlet.Logout</servlet-class>
+        <servlet-class>com.example.servlet.Logout</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Logout</servlet-name>
@@ -63,7 +63,7 @@
 
     <servlet>
         <servlet-name>Todo</servlet-name>
-        <servlet-class>org.example.servlet.Todo</servlet-class>
+        <servlet-class>com.example.servlet.Todo</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Todo</servlet-name>
@@ -72,7 +72,7 @@
 
     <filter>
         <filter-name>loginFilter</filter-name>
-        <filter-class>org.example.filter.LoginFilter</filter-class>
+        <filter-class>com.example.filter.LoginFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>loginFilter</filter-name>
