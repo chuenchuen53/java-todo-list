@@ -1,10 +1,10 @@
-package com.example.todolist.bean;
+package com.example.todolist.entity;
 
 
 import lombok.Data;
 
 @Data
-public class UserBean {
+public class User {
     private Integer id;
     private String username;
     private String password;

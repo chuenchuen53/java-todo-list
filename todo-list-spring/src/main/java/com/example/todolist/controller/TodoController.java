@@ -1,12 +1,11 @@
 package com.example.todolist.controller;
 
-import com.example.todolist.bean.TodoBean;
+import com.example.todolist.entity.Todo;
 import com.example.todolist.resbody.InsertTodoReq;
 import com.example.todolist.resbody.UpdateTodoReq;
 import com.example.todolist.service.api.TodoService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,17 +14,20 @@ import java.util.List;
 @RestController
 @RequestMapping("api/todo")
 public class TodoController {
-    @Autowired
-    TodoService todoService;
+    private final TodoService todoService;
+
+    public TodoController(TodoService todoService) {
+        this.todoService = todoService;
+    }
 
     @GetMapping
-    public List<TodoBean> getTodos(HttpSession session) {
+    public List<Todo> getTodos(HttpSession session) {
         int userId = (int) session.getAttribute("userId");
-        return todoService.getTodos(userId);
+        return todoService.listTodos(userId);
     }
 
     @PostMapping
-    public TodoBean insertTodo(@Validated @RequestBody InsertTodoReq insertTodoReq, HttpSession session) {
+    public Todo insertTodo(@Validated @RequestBody InsertTodoReq insertTodoReq, HttpSession session) {
         int userId = (int) session.getAttribute("userId");
         String description = insertTodoReq.getDescription();
         return todoService.insertTodo(userId, description);
@@ -36,7 +38,7 @@ public class TodoController {
         int userId = (int) session.getAttribute("userId");
         Integer todoId = updateTodoReq.getId();
         String description = updateTodoReq.getDescription();
-        Boolean isCompleted = updateTodoReq.getIsCompleted();
+        Boolean isCompleted = updateTodoReq.getCompleted();
         if (description == null && isCompleted == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;

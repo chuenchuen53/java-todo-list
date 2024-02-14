@@ -3,7 +3,7 @@ import { wrappedFetch } from "./wrappedFetch"
 export interface Todo {
   id: number
   description: string
-  isCompleted: boolean
+  completed: boolean
   modifiedAt: Date
 }
 
@@ -19,7 +19,7 @@ type UpdateTodoBody =
     }
   | {
       id: number
-      isCompleted: boolean
+      completed: boolean
     }
 
 const url = "todo"
@@ -43,8 +43,8 @@ export async function updateTodoDescription(id: number, description: string): Pr
   return await updateTodo({ id, description })
 }
 
-export async function updateTodoStatus(id: number, isCompleted: boolean): Promise<UpdateTodoResult> {
-  return await updateTodo({ id, isCompleted })
+export async function updateTodoStatus(id: number, completed: boolean): Promise<UpdateTodoResult> {
+  return await updateTodo({ id, completed })
 }
 
 export async function deleteTodo(id: number): Promise<DeleteTodoResult> {

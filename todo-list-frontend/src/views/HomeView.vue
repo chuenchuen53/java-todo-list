@@ -45,9 +45,9 @@ async function handleAddTodo(): Promise<void> {
 
 async function handleToggleTodoStatus(todo: Todo): Promise<void> {
   try {
-    await updateTodoStatus(todo.id, todo.isCompleted)
+    await updateTodoStatus(todo.id, todo.completed)
   } catch (e) {
-    todos.value = todos.value.map((t) => (t.id === todo.id ? { ...t, isCompleted: !todo.isCompleted } : t))
+    todos.value = todos.value.map((t) => (t.id === todo.id ? { ...t, completed: !todo.completed } : t))
     throw e
   }
 }
@@ -109,13 +109,13 @@ function handleEditTodoClick(todo: Todo): void {
               <input
                 @change="handleToggleTodoStatus(todo)"
                 type="checkbox"
-                v-model="todo.isCompleted"
+                v-model="todo.completed"
                 class="form-check-input mt-0"
               />
             </div>
             <div
               class="w-100 mh40 mx-3 d-flex py-2 border-bottom border-light-subtle text-break"
-              :class="todo.isCompleted && 'text-body-tertiary text-decoration-line-through'"
+              :class="todo.completed && 'text-body-tertiary text-decoration-line-through'"
             >
               {{ todo.description }}
             </div>

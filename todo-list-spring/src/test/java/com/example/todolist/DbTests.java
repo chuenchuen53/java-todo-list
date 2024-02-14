@@ -1,7 +1,7 @@
 package com.example.todolist;
 
-import com.example.todolist.bean.TodoBean;
-import com.example.todolist.bean.UserBean;
+import com.example.todolist.entity.Todo;
+import com.example.todolist.entity.User;
 import com.example.todolist.mapper.TodoMapper;
 import com.example.todolist.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ public class DbTests {
 
     @Test
     public void selectUser() {
-        UserBean user = userMapper.selectUser("t1");
+        User user = userMapper.selectUser("t1");
         System.out.println(user);
     }
 
@@ -31,13 +31,13 @@ public class DbTests {
 
     @Test
     public void getTodos() {
-        List<TodoBean> todos = todoMapper.getTodos(3);
+        List<Todo> todos = todoMapper.listTodos(3);
         System.out.println("todos = " + todos);
     }
 
     @Test
     public void insertTodo() {
-        TodoBean todo = new TodoBean();
+        Todo todo = new Todo();
         todo.setUserId(3);
         todo.setDescription("test insert todo");
         int row = todoMapper.insertTodo(todo);
@@ -47,13 +47,23 @@ public class DbTests {
 
     @Test
     public void updateTodoStatus() {
-        int row = todoMapper.updateTodoStatus(65, 3, true);
+        Todo todo = Todo.builder()
+                .id(7)
+                .userId(1)
+                .completed(true)
+                .build();
+        int row = todoMapper.updateTodo(todo);
         System.out.println("row = " + row);
     }
 
     @Test
     public void updateTodoDescription() {
-        int row = todoMapper.updateTodoDescription(65, 3, "test update");
+        Todo todo = Todo.builder()
+                .id(7)
+                .userId(1)
+                .description("test update")
+                .build();
+        int row = todoMapper.updateTodo(todo);
         System.out.println("row = " + row);
     }
 

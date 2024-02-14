@@ -1,16 +1,16 @@
 package com.example.todolist.service.api;
 
 
-import com.example.todolist.bean.TodoBean;
+import com.example.todolist.entity.Todo;
 
 import java.util.List;
 
 public interface TodoService {
-    List<TodoBean> getTodos(int userId);
+    List<Todo> listTodos(int userId);
 
-    TodoBean insertTodo(int userId, String description);
+    Todo insertTodo(int userId, String description);
 
-    int updateTodoStatus(int todoId, int userId, boolean isCompleted);
+    int updateTodoStatus(int todoId, int userId, boolean completed);
 
     int updateTodoDescription(int todoId, int userId, String description);
 

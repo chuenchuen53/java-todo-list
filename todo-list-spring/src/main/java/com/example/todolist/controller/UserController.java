@@ -18,8 +18,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("api")
 public class UserController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("login")
     public Map<String, Boolean> isLogin(HttpSession session) {
@@ -51,8 +54,7 @@ public class UserController {
     }
 
     @PostMapping("signup")
-    public Map<String, String> signup(@Validated @RequestBody SignupReq signupReq,
-                                      HttpServletResponse servletResponse) {
+    public Map<String, String> signup(@Validated @RequestBody SignupReq signupReq) {
         String username = signupReq.getUsername();
         String password = signupReq.getPassword();
         String confirmPassword = signupReq.getConfirmPassword();

@@ -1,23 +1,25 @@
 package com.example.todolist.service.impl;
 
-import com.example.todolist.bean.UserBean;
+import com.example.todolist.entity.User;
 import com.example.todolist.exception.IncorrectUsernameOrPasswordException;
 import com.example.todolist.exception.RegisteredUsernameException;
 import com.example.todolist.mapper.UserMapper;
 import com.example.todolist.service.api.UserService;
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
+
+    public UserServiceImpl(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
 
     @Override
     public int login(String username, String password) throws IncorrectUsernameOrPasswordException {
-        UserBean userBean = userMapper.selectUser(username);
+        User userBean = userMapper.selectUser(username);
         if (userBean == null) {
             throw new IncorrectUsernameOrPasswordException();
         }

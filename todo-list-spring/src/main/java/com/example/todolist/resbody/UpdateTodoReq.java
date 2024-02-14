@@ -6,5 +6,5 @@ import lombok.Data;
 public class UpdateTodoReq {
     private Integer id;
     private String description;
-    private Boolean isCompleted;
+    private Boolean completed;
 }

@@ -12,6 +12,6 @@ CREATE TABLE todos
     id           INT AUTO_INCREMENT PRIMARY KEY,
     user_id      INT          NOT NULL,
     description  VARCHAR(255) NOT NULL DEFAULT '',
-    is_completed TINYINT      NOT NULL DEFAULT 0,
+    completed TINYINT      NOT NULL DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
