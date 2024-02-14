@@ -11,12 +11,13 @@ export async function wrappedFetch(url: string, method: Method, body?: Object): 
     credentials: "include",
     body: body ? JSON.stringify(body) : undefined
   })
-  if (response.status === 401) {
-    router.push("/login")
-  } else if (response.status === 400 || response.status === 404 || response.status === 500) {
+  if (response.status === 400 || response.status === 401 || response.status === 404 || response.status === 500) {
     switch (response.status) {
       case 400:
         throw new Error("Bad request")
+      case 401:
+        router.push("/login")
+        throw new Error("Unauthorized")
       case 404:
         throw new Error("Not found")
       case 500:

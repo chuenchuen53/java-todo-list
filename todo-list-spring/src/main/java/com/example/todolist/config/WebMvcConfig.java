@@ -29,7 +29,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
-                .addPathPatterns("/api/todo/**")
-                .excludePathPatterns("/api/todo/**", "OPTIONS");
+                .addPathPatterns("/api/todo/**");
     }
 }
