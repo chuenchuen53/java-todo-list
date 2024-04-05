@@ -6,5 +6,5 @@ import com.example.todolist.exception.RegisteredUsernameException;
 public interface UserService {
     int login(String username, String password) throws IncorrectUsernameOrPasswordException;
 
-    void signup(String username, String password, String confirmPassword) throws RegisteredUsernameException;
+    void signup(String username, String password) throws RegisteredUsernameException;
 }

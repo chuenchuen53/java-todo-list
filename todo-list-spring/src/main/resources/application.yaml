@@ -14,7 +14,7 @@ spring:
       password: abc12345
 
 mybatis:
-  type-aliases-package: com.example.todolist.bean
+  type-aliases-package: com.example.todolist.entity
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

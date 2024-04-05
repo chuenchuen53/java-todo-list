@@ -57,11 +57,10 @@ public class UserController {
     public Map<String, String> signup(@Validated @RequestBody SignupReq signupReq) {
         String username = signupReq.getUsername();
         String password = signupReq.getPassword();
-        String confirmPassword = signupReq.getConfirmPassword();
 
         Map<String, String> result = new HashMap<>();
         try {
-            userService.signup(username, password, confirmPassword);
+            userService.signup(username, password);
             result.put("message", "success");
         } catch (RegisteredUsernameException e) {
             result.put("message", "Username is already registered");

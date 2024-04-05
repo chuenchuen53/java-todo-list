@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void signup(String username, String password, String confirmPassword) throws RegisteredUsernameException {
+    public void signup(String username, String password) throws RegisteredUsernameException {
         if (userMapper.selectUser(username) != null) {
             throw new RegisteredUsernameException();
         }
