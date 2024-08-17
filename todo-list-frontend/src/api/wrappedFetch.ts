@@ -11,7 +11,9 @@ export async function wrappedFetch(url: string, method: Method, body?: Object): 
     credentials: "include",
     body: body ? JSON.stringify(body) : undefined
   })
-  if (response.status === 400 || response.status === 401 || response.status === 404 || response.status === 500) {
+  if (response.status === 200 || response.status === 204) {
+    return response
+  } else if (response.status === 400 || response.status === 401 || response.status === 404 || response.status === 500) {
     switch (response.status) {
       case 400:
         throw new Error("Bad request")
@@ -23,8 +25,6 @@ export async function wrappedFetch(url: string, method: Method, body?: Object): 
       case 500:
         throw new Error("Internal server error")
     }
-  } else if (response.status === 200 || response.status === 204) {
-    return response
   }
   throw new Error("Unhandled status code")
 }
