@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_flutter_app/home_page.dart';
 import 'package:todo_flutter_app/login_page.dart';
 import 'package:todo_flutter_app/app_route_path.dart';
@@ -8,7 +9,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -30,6 +35,7 @@ class _MyAppState extends State<MyApp> {
       ),
       routerDelegate: _appRouterDelegate,
       routeInformationParser: AppRouteInformationParser(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -39,8 +45,7 @@ class AppRouterDelegateImpl extends RouterDelegate<AppRoutePath>
   @override
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  final _currentConfiguration =
-      ValueNotifier<AppRoutePath>(AppRoutePath.home());
+  final _currentConfiguration = ValueNotifier<AppRoutePath>(AppRoutePath.home());
 
   @override
   Future<void> setNewRoutePath(AppRoutePath configuration) async {
@@ -79,6 +84,7 @@ class AppRouterDelegate extends StatefulWidget {
 
 class AppRouterDelegateState extends State<AppRouterDelegate> {
   late List<AppRoutePath> _routeStack;
+  final Map<Object, void Function(AppRoutePath)> _routeChangeListeners = {};
 
   @override
   void initState() {
@@ -99,23 +105,73 @@ class AppRouterDelegateState extends State<AppRouterDelegate> {
 
   Future<void> setNewRoutePath(AppRoutePath configuration) async {
     setState(() {
-      if (configuration.isLoginPage) {
-        _routeStack = [AppRoutePath.home(), configuration];
-      } else if (configuration.isSignupPage) {
+      if (configuration.isLoginPage || configuration.isSignupPage) {
         _routeStack = [AppRoutePath.home(), configuration];
       } else {
         _routeStack = [configuration];
       }
     });
+    _notifyRouteChangeListeners(configuration);
+    widget.onConfigurationChanged(_routeStack.last);
+  }
+
+  void _notifyRouteChangeListeners(AppRoutePath newRoute) {
+    for (var listener in _routeChangeListeners.values) {
+      listener(newRoute);
+    }
+  }
+
+  void _pushRoute(AppRoutePath path) {
+    setState(() {
+      _routeStack.add(path);
+    });
+    _notifyRouteChangeListeners(path);
+    widget.onConfigurationChanged(_routeStack.last);
+  }
+
+  void _popRoute() {
+    if (_routeStack.length > 1) {
+      setState(() {
+        _routeStack.removeLast();
+      });
+      _notifyRouteChangeListeners(_routeStack.last);
+      widget.onConfigurationChanged(_routeStack.last);
+    }
+  }
+
+  void _replaceRoute(AppRoutePath path) {
+    setState(() {
+      if (_routeStack.isNotEmpty) {
+        _routeStack.last = path;
+      } else {
+        _routeStack.add(path);
+      }
+    });
+    _notifyRouteChangeListeners(path);
+    widget.onConfigurationChanged(_routeStack.last);
+  }
+
+  void _popToHome() {
+    setState(() {
+      _routeStack = [AppRoutePath.home()];
+    });
+    _notifyRouteChangeListeners(AppRoutePath.home());
     widget.onConfigurationChanged(_routeStack.last);
   }
 
   @override
   Widget build(BuildContext context) {
     return RouterProvider(
+      getCurrentRouteStack: () => _routeStack,
       pushRoute: _pushRoute,
       replaceRoute: _replaceRoute,
       popToHome: _popToHome,
+      onRouteChange: (Object key, void Function(AppRoutePath) listener) {
+        _routeChangeListeners[key] = listener;
+      },
+      removeRouteChangeListener: (Object key) {
+        _routeChangeListeners.remove(key);
+      },
       child: Navigator(
         pages: [
           const MaterialPage(
@@ -144,46 +200,11 @@ class AppRouterDelegateState extends State<AppRouterDelegate> {
       ),
     );
   }
-
-  void _pushRoute(AppRoutePath path) {
-    setState(() {
-      _routeStack.add(path);
-    });
-    widget.onConfigurationChanged(_routeStack.last);
-  }
-
-  void _popRoute() {
-    if (_routeStack.length > 1) {
-      setState(() {
-        _routeStack.removeLast();
-      });
-      widget.onConfigurationChanged(_routeStack.last);
-    }
-  }
-
-  void _replaceRoute(AppRoutePath path) {
-    setState(() {
-      if (_routeStack.isNotEmpty) {
-        _routeStack.last = path;
-      } else {
-        _routeStack.add(path);
-      }
-    });
-    widget.onConfigurationChanged(_routeStack.last);
-  }
-
-  void _popToHome() {
-    setState(() {
-      _routeStack = [AppRoutePath.home()];
-    });
-    widget.onConfigurationChanged(_routeStack.last);
-  }
 }
 
 class AppRouteInformationParser extends RouteInformationParser<AppRoutePath> {
   @override
-  Future<AppRoutePath> parseRouteInformation(
-      RouteInformation routeInformation) async {
+  Future<AppRoutePath> parseRouteInformation(RouteInformation routeInformation) async {
     final uri = routeInformation.uri;
 
     if (uri.pathSegments.isEmpty) {

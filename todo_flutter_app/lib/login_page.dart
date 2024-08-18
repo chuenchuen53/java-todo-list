@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:todo_flutter_app/api_service/user_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_flutter_app/app_route_path.dart';
+import 'package:todo_flutter_app/provider/auto_state.dart';
 import 'package:todo_flutter_app/router_provider.dart';
 import 'package:todo_flutter_app/util.dart';
 import 'package:todo_flutter_app/widgets/aligned_right_text_button.dart';
 import 'package:todo_flutter_app/widgets/styled_submit_button.dart';
 import 'package:todo_flutter_app/widgets/styled_text_form_field.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
   LoginPageState createState() => LoginPageState();
 }
 
-class LoginPageState extends State<LoginPage> {
+class LoginPageState extends ConsumerState<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _loading = false;
   String _errorMsg = '';
 
   @override
@@ -31,28 +31,25 @@ class LoginPageState extends State<LoginPage> {
   Future<void> _handleSubmit() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
-        _loading = true;
         _errorMsg = '';
       });
 
-      try {
-        bool loginSuccess = await UserApi.login(_usernameController.text, _passwordController.text);
+      await ref.read(authStateProvider.notifier).login(
+            _usernameController.text,
+            _passwordController.text,
+          );
 
-        if (loginSuccess) {
+      if (mounted) {
+        final authState = ref.read(authStateProvider);
+        if (authState.hasError) {
+          setState(() {
+            _errorMsg = 'An error occurred. Please try again.';
+          });
+        } else if (authState.value == true) {
           RouterProvider.of(context).popToHome();
         } else {
           setState(() {
             _errorMsg = 'Username or password is incorrect';
-          });
-        }
-      } catch (e) {
-        setState(() {
-          _errorMsg = 'An error occurred. Please try again.';
-        });
-      } finally {
-        if (mounted) {
-          setState(() {
-            _loading = false;
           });
         }
       }
@@ -65,6 +62,9 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authStateProvider);
+    final isLoading = authState.isLoading;
+
     return Scaffold(
       body: Center(
         child: Form(
@@ -98,13 +98,13 @@ class LoginPageState extends State<LoginPage> {
                 StyledSubmitButton(
                   buttonText: 'Login',
                   onPressed: _handleSubmit,
-                  loading: _loading,
+                  loading: isLoading,
                   errorMsg: _errorMsg,
                 ),
                 AlignedRightTextButton(
                   text: 'Go signup',
                   onPressed: () => _goSignupPage(context),
-                  disabled: _loading,
+                  disabled: isLoading,
                 ),
               ],
             ),

@@ -4,6 +4,7 @@ import 'package:todo_flutter_app/api_service/api_helper.dart';
 
 class UserApi {
   static Future<bool> isLogin() async {
+    print("call isLogin api");
     final response = await Api.wrappedFetch("login", ApiMethod.GET);
     final data = IsLoginResp.fromJson(jsonDecode(response.body));
     return data.isLogin;

@@ -46,3 +46,7 @@ app.*.map.json
 .fvm/
 
 .env
+
+# Generated Files
+**/*.freezed.dart
+**/*.g.dart

@@ -4,7 +4,6 @@ export interface Todo {
   id: number
   description: string
   completed: boolean
-  modifiedAt: Date
 }
 
 type GetTodoResult = Todo[]

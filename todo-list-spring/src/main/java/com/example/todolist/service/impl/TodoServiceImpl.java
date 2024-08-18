@@ -25,6 +25,7 @@ public class TodoServiceImpl implements TodoService {
         Todo todo = new Todo();
         todo.setDescription(description);
         todo.setUserId(userId);
+        todo.setCompleted(false);
         todoMapper.insertTodo(todo);
         return todo;
     }
